@@ -6,7 +6,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { method } = req
-  const { id } = req.query as { id: string }
+  const { id } = req.query as { id: string } // for typescript
 
   if (method === 'GET') {
     const prod = await prisma.product.findUnique({
