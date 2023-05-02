@@ -1,5 +1,6 @@
 import Store from '@/components/Store'
 import { Product } from '@/types'
+import { GetServerSidePropsContext } from 'next'
 import Image from 'next/image'
 import { useEffect } from 'react'
 
@@ -22,7 +23,7 @@ export default function () {
 
   // console.log(products)
 
-  // prisma 
+  // prisma
   const submitData = async (title: any, description: any, price: any) => {
     try {
       const body = { title, description, price }
@@ -40,7 +41,7 @@ export default function () {
   return (
     <div>
       {products.length === 0 ? (
-        <div className='bg-green-100 m-2 flex justify-center '>
+        <div className="bg-green-100 m-2 flex justify-center ">
           <h1>Empty</h1>
         </div>
       ) : (
@@ -71,4 +72,14 @@ export default function () {
       )}
     </div>
   )
+}
+
+export const getServerSideProps = async ({
+  req,
+}: GetServerSidePropsContext) => {
+  console.log(req.cookies.userId)
+  
+  return {
+    props: {},
+  }
 }

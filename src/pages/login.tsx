@@ -1,46 +1,33 @@
-import { ISignUpData } from '@/types'
+import { IRegisterUpData, ISignUpData } from '@/types'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Cookies from 'js-cookie'
 
 export default function loign() {
-  const [logEmail, setlogEmail] = useState('')
-  const [logPassword, setlogPassword] = useState('')
-  const [errors, seterrors] = useState<ISignUpData>({
+  const router = useRouter()
+  const [errors, setErrors] = useState<ISignUpData>({
     email: '',
     password: '',
   })
 
-  const handleSubmit = () => {
-    // ev.preventDefault()
-    seterrors(valide(logEmail, logPassword))
-    console.log(errors)
-  }
+  const handleSubmit = async (ev: any) => {
+    ev.preventDefault()
+    const { email, password } = ev.target.elements
 
-  const valide = (emaillg: any, passwordlg: any) => {
-    let eror: ISignUpData = {
-      email: '',
-      password: '',
+    try {
+      const res = await axios.post('/api/login', {
+        email: email.value,
+        password: password.value,
+      })
+
+      Cookies.set('userId', res.data.id)
+      console.log('Login Success')
+      router.push('/')
+    } catch (error) {
+      console.log('error :>> ', error)
     }
-    const emailPattern = /^[^\s@]+@[^\s@]+.[^\s@]+$/
-    const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$/
-
-    if (emaillg === '') {
-      eror.email = 'rak khliti email khawi'
-    } else if (!emailPattern.test(emaillg)) {
-      eror.email = 'had email makhdamch'
-    } else {
-      eror.email = ''
-    }
-
-    if (passwordlg === '') {
-      eror.password = 'rak khliti password khawi'
-    } else if (!passwordPattern.test(passwordlg)) {
-      eror.password = 'had password makhdamch'
-    } else {
-      eror.password = ''
-    }
-
-    return eror
   }
 
   return (
@@ -52,88 +39,80 @@ export default function loign() {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign in to your account
               </h1>
-              {/* <form className="space-y-4 md:space-y-6" action='#'> */}
-              <div className="space-y-4 md:space-y-6">
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Your email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={logEmail}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="email@gmail.com"
-                    onChange={(e) => {
-                      setlogEmail(e.target.value)
-                    }}
-                  />
-                  <span className="text-red-600">{errors.email}</span>
-                </div>
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={logPassword}
-                    placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    onChange={(e) => {
-                      setlogPassword(e.target.value)
-                    }}
-                  />
-                  <span className="text-red-600">{errors.password}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                      <input
-                        aria-describedby="remember"
-                        type="checkbox"
-                        className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      />
-                    </div>
-                    <div className="ml-3 text-sm">
-                      <label
-                        htmlFor="remember"
-                        className="text-gray-500 dark:text-gray-300"
-                      >
-                        Remember me
-                      </label>
-                    </div>
+              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
+                <div className="space-y-4 md:space-y-6">
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Your email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="email@gmail.com"
+                    />
+                    <span className="text-red-600">{errors.email}</span>
                   </div>
-                  <a
-                    // href="#"
-                    className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  <div>
+                    <label
+                      htmlFor="password"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="••••••••"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    />
+                    <span className="text-red-600">{errors.password}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          aria-describedby="remember"
+                          type="checkbox"
+                          className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label
+                          htmlFor="remember"
+                          className="text-gray-500 dark:text-gray-300"
+                        >
+                          Remember me
+                        </label>
+                      </div>
+                    </div>
+                    <a
+                      // href="#"
+                      className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    >
+                      Forgot password?
+                    </a>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                   >
-                    Forgot password?
-                  </a>
+                    Sign in
+                  </button>
+                  <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                    Don’t have an account yet?{' '}
+                    <Link
+                      href="/register"
+                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    >
+                      Sign up
+                    </Link>
+                  </p>
                 </div>
-                <button
-                  type="submit"
-                  className="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                  onClick={handleSubmit}
-                >
-                  Sign in
-                </button>
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                  Don’t have an account yet?{' '}
-                  <Link
-                    href="/register"
-                    className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                  >
-                    Sign up
-                  </Link>
-                </p>
-              </div>
+              </form>
             </div>
           </div>
         </div>
