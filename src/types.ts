@@ -27,3 +27,12 @@ export interface Product {
   images: string[]
   quantity?: number
 }
+export interface ISignUpData {
+  email: string
+  password: string
+}
+export interface IRegisterUpData {
+  name: string
+  email: string
+  password: string
+}

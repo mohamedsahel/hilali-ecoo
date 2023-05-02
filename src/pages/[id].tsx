@@ -46,7 +46,7 @@ export default function buynow({ product }: { product: Product }) {
   const submitData = async (title: any, description: any, price: any) => {
     try {
       const body = { title, description, price }
-      await fetch('/api', {
+      await fetch('http://localhost:3000/api/product', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -56,10 +56,6 @@ export default function buynow({ product }: { product: Product }) {
       console.error(error)
     }
   }
-  // title: title,
-  // description: description,
-  // price: price,
-  // discountPercentage: discountPercentage,
 
   return (
     <>
@@ -168,7 +164,7 @@ export default function buynow({ product }: { product: Product }) {
               className="my-3 flex text-sm bg-green-500 p-2 hover:bg-green-400 font-medium"
               onClick={() => {
                 add(),
-                  submitData(product.title, product.description, product.price)
+                submitData(product.title, product.description, product.price)
               }}
             >
               ADD TO CART

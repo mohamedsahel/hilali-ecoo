@@ -9,14 +9,20 @@ export default async function handler(
   const { id } = req.query as { id: string } // for typescript
 
   if (method === 'GET') {
-    const prod = await prisma.product.findUnique({
-      where: {
-        id,
-      },
-    })
-
+    const prod = await prisma.product.findMany()
+     
     return res.json(prod)
   }
+
+  // if (method === 'GET') {
+  //   const prod = await prisma.product.findUnique({
+  //     where: {
+  //       id,
+  //     },
+  //   })
+
+  //   return res.json(prod)
+  // }
 
   if (method === 'POST') {
     const { title, description, price } = req.body
@@ -33,13 +39,13 @@ export default async function handler(
     return res.status(200).json(prod)
   }
 
-  if(method === 'DELETE') {
-    const prod = await prisma.product.delete({
-      where: {
-        id
-      }
-    })
+  // if (method === 'DELETE') {
+  //   const prod = await prisma.product.delete({
+  //     where: {
+  //       id,
+  //     },
+  //   })
 
-    return res.json('ok')
-  }
+  //   return res.json('ok')
+  // }
 }

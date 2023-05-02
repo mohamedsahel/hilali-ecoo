@@ -20,12 +20,27 @@ export default function () {
     delQuantProd(prod)
   }
 
-  console.log(products)
+  // console.log(products)
+
+  // prisma 
+  const submitData = async (title: any, description: any, price: any) => {
+    try {
+      const body = { title, description, price }
+      await fetch('http://localhost:3000/api/product', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      // await Router.push('/drafts');
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <div>
       {products.length === 0 ? (
-        <div>
+        <div className='bg-green-100 m-2 flex justify-center '>
           <h1>Empty</h1>
         </div>
       ) : (
